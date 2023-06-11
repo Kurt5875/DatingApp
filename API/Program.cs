@@ -14,6 +14,10 @@ builder.Services.AddDbContext<DataContext>(optionsAction: options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS
+builder.Services.AddCors();
+
+// Web Application (middleware)
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +26,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(
+    builder => builder.WithOrigins(new string[] { "http://localhost:4200", "https://localhost:4200" }).AllowAnyHeader().AllowAnyMethod());
 
 app.UseHttpsRedirection();
 
