@@ -18,7 +18,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "uriFormat": "%s/swagger/index.html"
+      "uriFormat": "%s/swagger/index.html",
+      "hotReloadEnabled": false
     },
     "IIS Express": {
       "commandName": "IISExpress",
