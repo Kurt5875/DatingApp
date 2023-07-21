@@ -24,6 +24,12 @@ namespace API.Extensions
             // Token Service and JwtBearer Authentication
             services.AddScoped<ITokenService, TokenService>();
 
+            // Repository Pattern
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            // AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             return services;
         }
     }

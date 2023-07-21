@@ -65,7 +65,7 @@ namespace API.Controllers
 
             return new UserDto
             {
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
@@ -73,12 +73,13 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
+            var username = loginDto.Username;
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == username.ToLower());
 
             if (user == null)
             {
                 return Unauthorized(
-                    string.Format(CultureInfo.InvariantCulture, "The user: {0} does not exists!", loginDto.UserName));
+                    string.Format(CultureInfo.InvariantCulture, "The user: {0} does not exists!", username));
             }
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -89,20 +90,20 @@ namespace API.Controllers
                 if (computeHash[i] != user.PasswordHash[i])
                 {
                     return Unauthorized(
-                        string.Format(CultureInfo.InvariantCulture, "The password for user: {0} is incorrect!", loginDto.UserName));
+                        string.Format(CultureInfo.InvariantCulture, "The password for user: {0} is incorrect!", username));
                 }
             }
 
             return new UserDto
             {
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
 
-        private async Task<bool> UserExists(string userName)
+        private async Task<bool> UserExists(string username)
         {
-            return await _context.Users.AnyAsync(x => x.UserName == userName.ToLower());
+            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
     }
 }
