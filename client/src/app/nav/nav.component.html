@@ -20,6 +20,9 @@
           <a class="dropdown-item">Edit Profile</a>
           <a class="dropdown-item" (click)="logout()">Logout</a>
         </div>
+        <div>
+
+        </div>
       </div>
       <form *ngIf="!(accountService.currentUser$ | async)" #loginForm="ngForm" class="d-flex" (ngSubmit)="login()" autocomplete="off">
         <input

@@ -14,8 +14,11 @@ namespace API.Controllers
 
         private readonly IMapper _mapper;
 
-        public UsersController(IUserRepository userRepository, IMapper mapper)
+        private readonly ILogger<UsersController> _logger;
+
+        public UsersController(IUserRepository userRepository, IMapper mapper, ILogger<UsersController> logger)
         {
+            _logger = logger;
             _userRepository = userRepository;
             _mapper = mapper;
         }
@@ -57,12 +60,14 @@ namespace API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MemberDto>> GetMember(int id)
         {
+            _logger.Log(LogLevel.Information, "---- Called method : GetMember (id: " + id + ") ----");
             return await _userRepository.GetMemberByIdAsync(id);
         }
 
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetMember(string username)
         {
+            _logger.Log(LogLevel.Information, "---- Called method : GetMember (username: " + username + ") ----");
             return await _userRepository.GetMemberByUsernameAsync(username);
         }
 

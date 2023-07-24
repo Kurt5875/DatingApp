@@ -65,7 +65,7 @@ namespace API.Controllers
 
             return new UserDto
             {
-                Username = user.UserName,
+                UserName = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
@@ -73,7 +73,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var username = loginDto.Username;
+            var username = loginDto.UserName;
             var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == username.ToLower());
 
             if (user == null)
@@ -96,7 +96,7 @@ namespace API.Controllers
 
             return new UserDto
             {
-                Username = user.UserName,
+                UserName = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }

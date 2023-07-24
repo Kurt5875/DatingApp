@@ -7,16 +7,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './_modules/shared.module';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ListsComponent } from './lists/lists.component';
+import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { NavComponent } from './nav/nav.component';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { RegisterComponent } from './register/register.component';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
-import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
 @NgModule({
@@ -31,7 +33,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
     MessagesComponent,
     TestErrorComponent,
     NotFoundComponent,
-    ServerErrorComponent
+    ServerErrorComponent,
+    MemberCardComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
     SharedModule
   ],
   providers: [
-    { provide:HTTP_INTERCEPTORS, useClass:ErrorInterceptor, multi: true }
+    { provide:HTTP_INTERCEPTORS, useClass:ErrorInterceptor, multi: true },
+    { provide:HTTP_INTERCEPTORS, useClass:JwtInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
