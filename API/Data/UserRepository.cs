@@ -80,10 +80,5 @@ namespace API.Data
         {
             _context.Entry(user).State = EntityState.Modified;
         }
-
-        Task<AppUser> IUserRepository.GetUserByUsernameAsync(string username)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

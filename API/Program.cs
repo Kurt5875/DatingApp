@@ -30,7 +30,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
-
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
@@ -40,7 +39,7 @@ try
 {
     var context = services.GetRequiredService<DataContext>();
     await context.Database.MigrateAsync();
-    await Seed.SeedUsers(context);
+    await Seed.SeedUsers(context, builder.Configuration);
 }
 catch (Exception ex)
 {

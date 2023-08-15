@@ -8,7 +8,7 @@ namespace API.Data
 {
     public class Seed
     {
-        public static async Task SeedUsers(DataContext context)
+        public static async Task SeedUsers(DataContext context, IConfiguration config)
         {
             if (await context.Users.AnyAsync())
             {
@@ -24,7 +24,7 @@ namespace API.Data
                 using var hmac = new HMACSHA512();
 
                 user.UserName = user.UserName.ToLower();
-                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Pa$$w0rd"));
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(config.GetValue<string>("TokenKey")));
                 user.PasswordSalt = hmac.Key;
 
                 context.Users.Add(user);

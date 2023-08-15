@@ -15,7 +15,7 @@ export const authGuard: CanActivateFn = (route, state) => {
         return true;
       }
       else {
-        toastr.info('Please logon to see more!')
+        toastr.info('Please logon or subscribe to see more!')
         return false;
       }
     })

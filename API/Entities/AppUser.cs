@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using API.Extensions;
-
 namespace API.Entities
 {
     public class AppUser

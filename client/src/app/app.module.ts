@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { SharedModule } from './_modules/shared.module';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { LoadingSpinnerInterceptor } from './_interceptors/loading-spinner.interceptor';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ListsComponent } from './lists/lists.component';
@@ -20,6 +21,7 @@ import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { RegisterComponent } from './register/register.component';
 import { TestErrorComponent } from './errors/test-error/test-error.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
     TestErrorComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    MemberCardComponent
+    MemberCardComponent,
+    MemberEditComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +49,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
   ],
   providers: [
     { provide:HTTP_INTERCEPTORS, useClass:ErrorInterceptor, multi: true },
-    { provide:HTTP_INTERCEPTORS, useClass:JwtInterceptor, multi: true }
+    { provide:HTTP_INTERCEPTORS, useClass:JwtInterceptor, multi: true },
+    { provide:HTTP_INTERCEPTORS, useClass:LoadingSpinnerInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
