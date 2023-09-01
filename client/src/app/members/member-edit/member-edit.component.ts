@@ -47,11 +47,11 @@ export class MemberEditComponent implements OnInit, OnDestroy {
   }
 
   updateProfile() {
-    if (!this.member?.id) {
+    if (!this.member) {
       return;
     }
 
-    const subscription = this.memberService.updateMember(this.member.id, this.editForm?.value).subscribe({
+    const subscription = this.memberService.updateMember(this.member, this.editForm?.value).subscribe({
       next: () => {
         this.toastr.success('Your profile was successfully updated!');
         this.editForm?.reset(this.member);

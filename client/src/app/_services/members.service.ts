@@ -4,6 +4,7 @@ import { Observable, map, of } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member.model';
+import { Photo } from '../_models/photo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,11 +38,30 @@ export class MembersService {
     return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }
 
-  updateMember(memberId: number, updatedValueMember: Member) {
+  updateMember(member: Member, updatedValueMember: Member) {
     return this.http.put(this.baseUrl + 'users/', updatedValueMember).pipe(
       map(() => {
-        const index = this.members.findIndex(m => m.id === memberId);
+        const index = this.members.findIndex(m => m.id === member.id);
         this.members[index] = { ...this.members[index], ...updatedValueMember };
+      })
+    );
+  }
+
+  setMainPhoto(member: Member, photo: Photo) {
+    return this.http.put(this.baseUrl + 'users/set-main-photo/' + photo.id, {}).pipe(
+      map(() => {
+        const index = this.members.findIndex(m => m.id === member.id);
+        this.members[index].photoUrl = photo.url;
+      })
+    );
+  }
+
+  deletePhoto(member: Member, photo: Photo) {
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photo.id).pipe(
+      map(() => {
+        const index = this.members.findIndex(m => m.id === member.id);
+        const photoIndex = this.members[index].photos.findIndex(p => p.id === photo.id);
+        this.members[index].photos.splice(photoIndex, 1);
       })
     );
   }

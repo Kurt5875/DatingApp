@@ -16,10 +16,13 @@ namespace API.Controllers
 
         private readonly ITokenService _tokenService;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        private readonly IUserRepository _userRepository;
+
+        public AccountController(DataContext context, ITokenService tokenService, IUserRepository userRepository)
         {
             _context = context;
             _tokenService = tokenService;
+            _userRepository = userRepository;
         }
 
         #region Register with QueryString
@@ -66,7 +69,8 @@ namespace API.Controllers
             return new UserDto
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = null
             };
         }
 
@@ -74,7 +78,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var username = loginDto.UserName;
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == username.ToLower());
+            var user = await _userRepository.GetUserByUsernameAsync(username.ToLower());
 
             if (user == null)
             {
@@ -97,7 +101,8 @@ namespace API.Controllers
             return new UserDto
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
             };
         }
 
