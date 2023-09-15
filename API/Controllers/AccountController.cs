@@ -5,6 +5,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,8 +19,12 @@ namespace API.Controllers
 
         private readonly IUserRepository _userRepository;
 
-        public AccountController(DataContext context, ITokenService tokenService, IUserRepository userRepository)
+        private readonly IMapper _mapper;
+
+        public AccountController(DataContext context, ITokenService tokenService, IUserRepository userRepository,
+            IMapper mapper)
         {
+            _mapper = mapper;
             _context = context;
             _tokenService = tokenService;
             _userRepository = userRepository;
@@ -58,10 +63,11 @@ namespace API.Controllers
 
             var user = new AppUser
             {
-                UserName = registerDto.UserName.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key,
             };
+
+            _mapper.Map(registerDto, user);
 
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
@@ -70,7 +76,8 @@ namespace API.Controllers
             {
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                PhotoUrl = null
+                PhotoUrl = null,
+                KnownAs = user.KnownAs
             };
         }
 
