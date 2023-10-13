@@ -13,11 +13,11 @@
         </div>
         <div>
           <strong>Last active:</strong>
-          <p>{{ member.lastActive }}</p>
+          <p>{{ member.lastActive + "Z" | timeago }}</p>
         </div>
         <div>
           <strong>Member since:</strong>
-          <p>{{ member.created }}</p>
+          <p>{{ member.created | date: "dd MMM yyyy" }}</p>
         </div>
       </div>
       <div class="card-footer">
@@ -40,9 +40,9 @@
         <h4>Interests</h4>
         <p>{{ member.interests }}</p>
       </tab>
-      <tab heading="Photos">
+      <tab heading="Photos" #photoTab="tab">
         <div class="gallery-wrapper">
-          <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+          <gallery *ngIf="photoTab.active" [items]="galleryImages"></gallery>
         </div>
       </tab>
       <tab heading="Messages">
