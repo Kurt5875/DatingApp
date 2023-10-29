@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { AccountService } from '../_services/account.service';
+import { MembersService } from '../_services/members.service';
 
 @Component({
   selector: 'app-nav',
@@ -13,7 +14,8 @@ export class NavComponent implements OnInit {
   model: any = {};
   loggedIn = false;
 
-  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService) { }
+  constructor(
+    public accountService: AccountService, private router: Router) { }
 
   ngOnInit(): void {
   }

@@ -25,7 +25,7 @@ namespace API.Extensions
             // Token Service and JwtBearer Authentication
             services.AddScoped<ITokenService, TokenService>();
 
-            // Repository Pattern
+            // User Repository Pattern
             services.AddScoped<IUserRepository, UserRepository>();
 
             // AutoMapper
@@ -37,6 +37,9 @@ namespace API.Extensions
 
             // Log User Activity
             services.AddScoped<LogUserActivity>();
+
+            // Like Repository Pattern
+            services.AddScoped<ILikeRepository, LikeRepository>();
 
             return services;
         }

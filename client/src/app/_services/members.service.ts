@@ -16,7 +16,7 @@ import { User } from '../_models/user.model';
 export class MembersService {
   private baseUrl = environment.apiUrl;
   private members: Member[] = [];
-  private membersCache = new Map();
+  private cache = new Map();
   private user: User | undefined;
   private userParams: UserParams | undefined;
 
@@ -48,15 +48,22 @@ export class MembersService {
   }
 
   getMembers<T>(userParams: UserParams): Observable<PaginatedResults<T>> {
-    const membersCacheKey = this.getMembersCacheKey(userParams);
-    const membersCacheValue = this.membersCache.get(membersCacheKey);
+    const paramsKey = 'members';
+
+    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
+    params = params.append('minAge', userParams.minAge);
+    params = params.append('maxAge', userParams.maxAge);
+    params = params.append('gender', userParams.gender);
+    params = params.append('orderBy', userParams.orderBy);
+
+    const membersCacheValue = this.cache.get(this.getCacheKey(paramsKey, params));
     if (membersCacheValue) return of(membersCacheValue);
 
-    return this.getPaginatedResults<T>(this.baseUrl + 'users', userParams);
+    return this.getPaginatedResults<T>(this.baseUrl + 'users', params, paramsKey);
   }
 
   getMember(username: string): Observable<Member> {
-    const membersCacheValues = [...this.membersCache.values()];
+    const membersCacheValues = [...this.cache.values()];
     const members: Member[] = membersCacheValues.reduce((arr, element) => arr.concat(element.results), []);
     const member = members.find(m => m.userName === username);
 
@@ -91,8 +98,26 @@ export class MembersService {
     );
   }
 
-  private getMembersCacheKey(userParams: UserParams): string {
-    return Object.values(userParams).join('-');
+  addLike(username: string) {
+    return this.http.post(this.baseUrl + 'likes/' + username, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pageSize: number) {
+    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+
+    // const paramsRootKey = 'likes';
+    // const likesCacheValue = this.cache.get(this.getCacheKey(paramsRootKey, params));
+    // if (likesCacheValue) return of(likesCacheValue);
+
+    return this.getPaginatedResults<Member[]>(this.baseUrl + 'likes', params, 'likes');
+  }
+
+  private getCacheKey(paramsKey: string, params: HttpParams): string {
+    const paramsValue = params.keys().map(x => params.get(x));
+    paramsValue.unshift(paramsKey);
+
+    return paramsValue.join('-');
   }
 
   private getPaginationHeaders(pageNumber: number, pageSize: number) {
@@ -103,15 +128,8 @@ export class MembersService {
     return params;
   }
 
-  private getPaginatedResults<T>(url: string, userParams: UserParams) {
+  private getPaginatedResults<T>(url: string, params: HttpParams, paramsKey: string) {
     const paginatedResults: PaginatedResults<T> = new PaginatedResults<T>;
-
-    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
-    params = params.append('minAge', userParams.minAge);
-    params = params.append('maxAge', userParams.maxAge);
-    params = params.append('gender', userParams.gender);
-    params = params.append('orderBy', userParams.orderBy);
-
     return this.http.get<T>(url, { observe: 'response', params: params }).pipe(
       map(response => {
         if (response.body) {
@@ -123,7 +141,7 @@ export class MembersService {
           paginatedResults.pagination = JSON.parse(pagination);
         }
 
-        this.membersCache.set(this.getMembersCacheKey(userParams), paginatedResults);
+        this.cache.set(this.getCacheKey(paramsKey, params), paginatedResults);
 
         return paginatedResults;
       })
