@@ -7,6 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { ListsComponent } from './lists/lists.component';
+import { memberDetailedResolver } from './_resolvers/member-detailed.resolver';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { MessagesComponent } from './messages/messages.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
@@ -18,7 +19,7 @@ const routes: Routes = [
   {
     path: '', canActivate: [authGuard], runGuardsAndResolvers: 'always', children: [
       { path: 'members', component: MemberListComponent },
-      { path: 'members/:username', component: MemberDetailComponent },
+      { path: 'members/:username', component: MemberDetailComponent, resolve: { 'member': memberDetailedResolver } },
       { path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedChangesGuard] },
       { path: 'lists', component: ListsComponent },
       { path: 'messages', component: MessagesComponent },

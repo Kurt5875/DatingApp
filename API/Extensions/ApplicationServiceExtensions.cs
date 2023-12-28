@@ -41,6 +41,9 @@ namespace API.Extensions
             // Like Repository Pattern
             services.AddScoped<ILikeRepository, LikeRepository>();
 
+            // Message Repository Pattern
+            services.AddScoped<IMessageRepository, MessageRepository>();
+
             return services;
         }
     }
